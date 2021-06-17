@@ -1,32 +1,24 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
+    <HeaderGuide v-if="$route.meta.showHeaderGuide"></HeaderGuide>
+<!--    <boss-header v-if="$route.meta.showBossHeader"></boss-header>-->
     <router-view/>
+    <Footer v-if="$route.meta.showFooter"></Footer>
   </div>
 </template>
 
+<script>
+import HeaderGuide from './components/HeaderGuide/HeaderGuide'
+import Footer from './components/Footer/Footer.vue'
+import BossHeader from './components/HeaderGuide/BossHeader.vue'
+export default {
+  components:{
+    HeaderGuide,
+    Footer,
+    // BossHeader,
+  }
+}
+
+</script>
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
 </style>
