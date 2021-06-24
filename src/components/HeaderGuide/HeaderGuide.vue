@@ -19,6 +19,9 @@
                   <router-link to="/home" :class="[isCurrent('/home') ? 'activeClass':'']">首页</router-link>
                 </li>
                 <li>
+                  <router-link to="/addjob" :class="[isCurrent('/addjob') ? 'activeClass':'']">添加工作</router-link>
+                </li>
+                <li>
                   <router-link to="/job" :class="[isCurrent('/job') ? 'activeClass':'']">职位信息</router-link>
                 </li>
                 <li>
@@ -92,6 +95,7 @@ export default {
 }
 .header-guide {
   background-color: #070707;
+  /*background-color: #E6A23C;*/
   color: #333;
   text-align: center;
   line-height: 60px;

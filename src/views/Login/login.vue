@@ -169,7 +169,8 @@ export default {
             if (this.flag === '1') {
               this.$store.dispatch("companylogin",this.loginForm)
                 .then(response=>{
-                  this.$router.push('/mainhome');
+                  console.log("我进来了！没跳转!")
+                  this.$router.push('/candidates');
                 }).catch(err=>{
                 console.log(err);
               })

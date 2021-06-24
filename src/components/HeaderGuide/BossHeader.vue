@@ -16,28 +16,32 @@
             <div class="main-menu multi-page-menu text-white">
               <ul>
                 <li>
-                  <router-link to="/candidates" :class="[isCurrent('/candidates') ? 'activeClass':'']">人才信息</router-link>
+                  <router-link to="/candidates" :class="[isCurrent('/candidates') ? 'activeClass':'']">人才信息
+                  </router-link>
                 </li>
                 <li>
                   <router-link to="/posting" :class="[isCurrent('/posting') ? 'activeClass':'']">发布职位</router-link>
                 </li>
                 <li>
-                  <router-link to="/bosscenter" :class="[isCurrent('/bosscenter') ? 'activeClass':'']">BOSS中心</router-link>
+                  <router-link to="/bosscenter" :class="[isCurrent('/bosscenter') ? 'activeClass':'']">BOSS中心
+                  </router-link>
                 </li>
               </ul>
             </div>
-            <div class="header-social text-white float-right" v-if="token===null">
+            <div class="header-social text-white float-right" v-if="!token">
               <router-link to="/login" id="denglu">
                 <i class="ion-social-vimeo-outline">登录</i>
               </router-link>
               <span>|</span>
-
-              <router-link to="/regist">
-                <i class="ion-social-dribbble-outline">注册</i>
+              <router-link to="/mainhome">
+                <i class="ion-social-dribbble-outline" @click="logout">退出</i>
               </router-link>
             </div>
             <div class="header-social text-white float-right" v-else>
-                <a><i class="el-icon-user-solid">{{username}}</i> </a>
+              <a><i class="el-icon-user-solid">{{ username }}</i> </a>
+              <router-link to="/mainhome">
+                <i class="ion-social-dribbble-outline" @click="logout">退出</i>
+              </router-link>
             </div>
           </div>
           <!--Mobile Menu-->
@@ -50,39 +54,52 @@
 
 <script>
 export default {
-   data(){
-    return{
-      username:"",
-      token:"",
-      comid: "",
+  data () {
+    return {
     }
   },
-   methods:{
-    isCurrent(path){
+  computed: {
+    token () {
+      return this.$store.state.token
+    },
+    username () {
+      return this.$store.state.username
+    },
+    userid () {
+      return this.$store.state.userid
+    },
+    companyid () {
+      return this.$store.state.companyid
+    }
+  },
+  methods: {
+    isCurrent (path) {
       console.log(this.$route.path === path)
       return (this.$route.path === path || this.$route.meta.parentPath === path)
+    },
+    logout () {
+      this.$store.dispatch('logout')
     }
   },
-   mounted() {
-    this.username = this.$cookie.get("username");
-    this.token = this.$cookie.get("token");
-    this.comid = this.$cookie.get("comid")
+  mounted () {
   }
-};
+}
 </script>
 
 <style>
-.activeClass{
+.activeClass {
   color: rgb(255, 4, 4) !important;
   font-size: 16px !important;
   font-weight: 600 !important;
-  text-shadow: 0px 0px 80px #fff,0px 0px 72px #fff,0px 0px 150px #fff !important;
+  text-shadow: 0px 0px 80px #fff, 0px 0px 72px #fff, 0px 0px 150px #fff !important;
 }
+
 .header-section {
   position: relative;
   z-index: -9999;
 
 }
+
 .header-guide {
   background-color: #070707;
   color: #333;
@@ -94,6 +111,7 @@ export default {
   background-color: #ffffff;
   z-index: 9999;
 }
+
 /* .header-transparent {
   background-color: transparent;
 
@@ -104,6 +122,7 @@ export default {
   float: left;
   width: 100%;
 }
+
 /*Header Logo*/
 .header-logo {
   display: block;
@@ -115,6 +134,7 @@ export default {
 .header-section .btn {
   margin: 5px 0;
 }
+
 /*Header Social*/
 .header-social a {
   color: #ebcdcd;
@@ -123,17 +143,21 @@ export default {
   padding: 3px 0 3px 18px;
   box-sizing: border-box;
 }
+
 .header-social a:first-child {
   margin-left: 0;
 }
+
 .header-social a i {
   display: block;
   font-size: 15px;
   line-height: 60px;
 }
+
 .header-social a:hover {
   opacity: 0.7;
 }
+
 /*Menu*/
 .main-menu {
   display: block;
@@ -146,6 +170,7 @@ export default {
   margin-right: 40px;
 
 }
+
 .main-menu > ul > li > a {
   color: #3e3e3e;
   display: block;
@@ -157,12 +182,15 @@ export default {
   padding: 15px 0;
   box-sizing: border-box;
 }
+
 .main-menu.text-black > ul > li > a {
   color: #3e3e3e;
 }
+
 .main-menu.text-white > ul > li > a {
   color: #ffffff;
 }
+
 .main-menu > ul > li.active > a,
 .main-menu > ul > li:hover > a {
   color: #a2c4eb;
@@ -171,6 +199,7 @@ export default {
 .float-left {
   float: left;
 }
+
 .float-right {
   float: right;
 }

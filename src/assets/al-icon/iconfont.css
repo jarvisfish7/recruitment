@@ -1,0 +1,34 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 2617696 */
+  src: url('iconfont.eot?t=1623939067999'); /* IE9 */
+  src: url('iconfont.eot?t=1623939067999#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('iconfont.woff2?t=1623939067999') format('woff2'),
+       url('iconfont.woff?t=1623939067999') format('woff'),
+       url('iconfont.ttf?t=1623939067999') format('truetype'),
+       url('iconfont.svg?t=1623939067999#iconfont') format('svg');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 24px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.al-iconzhifubaozhifu:before {
+  content: "\e654";
+}
+
+.al-iconjinqian-:before {
+  content: "\e605";
+}
+
+.al-iconweixinzhifu:before {
+  content: "\e607";
+}
+
+.al-iconic_money_enter24px:before {
+  content: "\e619";
+}
+

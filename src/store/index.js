@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getToken, setToken ,getUserName,setUserName} from '../util/auth'
+import { getToken, setToken, getUserName, setUserName, getUserId,setUserId ,getCompanyId,setCompanyId} from '../util/auth'
 import { removeAll } from '../util/auth'
-import api, { postRequest } from '../util/api'
+import { postRequest } from '../util/api'
 import router from "../router";
 
 Vue.use(Vuex)
@@ -11,6 +11,8 @@ export default new Vuex.Store({
   state: {
     token: getToken(),
     username:getUserName(),
+    userid:getUserId(),
+    companyid:getCompanyId(),
   },
   mutations: {
     setToken: (state, token) => {
@@ -21,10 +23,20 @@ export default new Vuex.Store({
       state.username = username
       setUserName(username)
     },
+    setUserId: (state, userid) => {
+      state.userid = userid
+      setUserId(userid)
+    },
+    setCompanyId:(state,companyid)=> {
+      state.companyid=companyid
+      setCompanyId(companyid)
+    },
     reset: (state) => {
       removeAll()
       state.token = ''
       state.username = ''
+      state.userid = ''
+      state.companyid=''
     }
   },
   actions: {
@@ -34,11 +46,47 @@ export default new Vuex.Store({
           '/user/login',
           data)
           .then((response) => {
-            console.log(response)
             if(response.data.status === 200){
               const { data } = response
               commit('setToken', data.data)
               commit('setUserName',data.username)
+              commit('setUserId',data.userid)
+              resolve(response)
+            }
+            else
+              reject()
+          })
+          .catch(() => reject())
+      })
+    },
+    regist ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        alert("进入注册体")
+        postRequest(
+          '/user/regist',
+          data)
+          .then((response) => {
+            if(response.data.status === 200){
+              const { data } = response
+              console.log(response)
+              commit('setUserId',data.user.id)
+              resolve(response)
+            }
+            else
+              reject()
+          })
+          .catch(() => reject())
+      })
+    },
+    bossregist ({ commit }, data) {
+      return new Promise((resolve, reject) => {
+        postRequest(
+          '/company-user/regist',
+          data)
+          .then((response) => {
+            if(response.data.status === 200){
+              const { data } = response
+              commit('setUserId',data.userid)
               resolve(response)
             }
             else
@@ -50,14 +98,17 @@ export default new Vuex.Store({
     companylogin ({ commit }, data) {
       return new Promise((resolve, reject) => {
         postRequest(
-          '/companyuser/login',
+          '/company-user/login',
           data)
           .then((response) => {
-            console.log(response)
-            if(response.status === '200'){
+            console.log("进入成功！")
+            if(response.data.status === 200){
+              console.log("拿到数据了!")
               const { data } = response
               commit('setToken', data.data)
               commit('setUserName',data.username)
+              commit('setUserId',data.userid)
+              commit('setCompanyId',data.companyid)
               resolve(response)
             }
             else

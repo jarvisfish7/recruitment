@@ -1,5 +1,5 @@
 <template>
-  <div class="w">
+  <div class="w posting-session">
     <el-container>
       <el-aside class="posting-aside">
         <div class="posting-p1">
@@ -45,6 +45,10 @@ export default {
 </script>
 
 <style>
+.posting-session{
+  position: relative;
+  min-height: calc(100vh - 60px - 60px);
+}
 /* 左侧栏 */
 .posting-aside {
   margin: 20px 10px 10px 30px;
@@ -54,7 +58,7 @@ export default {
   font-size: 18px;
 }
 .posting-button .el-button {
-  font-size: 18px; 
+  font-size: 18px;
 }
 .posting-p1 p {
   color: #777;

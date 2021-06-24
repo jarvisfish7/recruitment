@@ -1,6 +1,6 @@
 <template>
-  <div class="reg-session">
-    <el-container class="w" width="1000px">
+  <div class="cw reg-session">
+    <el-container class="cw" width="1000px">
       <el-main class="reg-main">
         <el-header>
           <h1 class="el-icon-sunny">
@@ -62,6 +62,9 @@
 </template>
 
 <script>
+import { postRequest } from '../../util/api'
+import {setUserId,setUserName,setCompanyId } from '../../util/auth'
+
 export default {
   data() {
     return {
@@ -100,9 +103,10 @@ export default {
     submitForm(companyData) {
       this.$refs.companyData.validate(valid => {
         if (valid) {
-          this.$axios
-            .post("/bossreg", {
-              company: this.companyData.company,
+          postRequest("/company/add", {
+              companyId:"",
+              userId:this.$store.state.userid,
+              name: this.companyData.company,
               kind: this.companyData.kind,
               place: this.companyData.place,
               stage: this.companyData.stage,
@@ -110,16 +114,11 @@ export default {
               url: this.companyData.url,
               comintroduce: this.companyData.comintroduce,
               address: this.companyData.address,
-              token:this.token,
-              username:this.username,
             })
             .then(res => {
-              if (res.status == 200) {
-                this.$cookie.set('comid',res.data.data.comid)
-                alert("创建成功");
-                this.$router.push("/candidates");
-              }else{
-                console.log(err)
+              if (res.data.status == 200) {
+                alert("创建成功,去登录吧！");
+                this.$router.push("/login");
               }
             })
             .catch(err => {
@@ -133,17 +132,21 @@ export default {
     }
   },
   mounted() {
-    this.username = this.$cookie.get("username");
-    this.token = this.$cookie.get("token");
-    this.comid = this.$cookie.get("comid")
   }
 };
 </script>
 
 <style scoped>
+
+.cw{
+  width: 1200px;
+  min-height: calc(100vh - 60px - 60px);
+  margin: auto;
+}
 .reg-session {
-  width: 100%;
-  background-color: #000;
+  width: 1200px;
+  margin: auto;
+  min-height: calc(100vh - 60px - 60px);
 }
 .reg-main {
   position: relative;

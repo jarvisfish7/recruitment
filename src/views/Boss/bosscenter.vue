@@ -42,7 +42,7 @@ export default {
     return {
       token: "",
         username: "",
-        comid: "", 
+        comid: "",
       activeIndex: "1"
     };
   },
@@ -71,6 +71,8 @@ export default {
 
 <style>
 .bc-session {
+  position: relative;
+  min-height: calc(100vh - 60px - 60px);
   margin: 10px auto;
 }
 .bc-aside {

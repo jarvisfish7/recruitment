@@ -29,181 +29,6 @@
                   >
                     <a>{{b.value}}</a>
                   </span>
-                  <!-- <span v-if="(!a.id&&b.id==9)">
-                  <el-popover placement="bottom" width="550" trigger="hover">
-                    <div class="more">
-                      <p>ABCDEF</p>
-                      <p>
-                        <span>
-                          <a href="javascript:;">北京</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">长春</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">成都</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">重庆</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">长沙</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">常州</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">东莞</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">大连</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">佛山</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">福州</a>
-                        </span>
-                      </p>
-
-                      <p>GHIJ</p>
-                      <p>
-                        <span>
-                          <a href="javascript:;">贵阳</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">广州</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">哈尔滨</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">合肥</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">海口</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">杭州</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">惠州</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">金华</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">济南</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">嘉兴</a>
-                        </span>
-                      </p>
-
-                      <p>KLMN</p>
-                      <p>
-                        <span>
-                          <a href="javascript:;">昆明</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">廊坊</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">宁波</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">南昌</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">南京</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">南宁</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">南通</a>
-                        </span>
-                      </p>
-
-                      <p>OPQR</p>
-                      <p>
-                        <span>
-                          <a href="javascript:;">青岛</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">泉州</a>
-                        </span>
-                      </p>
-
-                      <p>STUV</p>
-                      <p>
-                        <span>
-                          <a href="javascript:;">上海</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">石家庄</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">绍兴</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">沈阳</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">深圳</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">苏州</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">天津</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">太原</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">台州</a>
-                        </span>
-                      </p>
-
-                      <p>WXYZ</p>
-                      <p>
-                        <span>
-                          <a href="javascript:;">武汉</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">无锡</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">温州</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">西安</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">厦门</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">烟台</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">珠海</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">中山</a>
-                        </span>
-                        <span>
-                          <a href="javascript:;">郑州</a>
-                        </span>
-                      </p>
-                    </div>
-                    <span></span>
-                    <span slot="reference">
-                      <a href="javascript:;">其他</a>
-                      <a href="javascript:;" class="triangle" @click="flag=ture"></a>
-                    </span>
-                  </el-popover>
-                  </span>-->
                 </div>
               </div>
             </li>
@@ -409,7 +234,7 @@ export default {
         keyword: this.keyword,
         desiredjob: this.active_id[0],
         experience: this.active_id[1],
-        academic: this.active_id[2], 
+        academic: this.active_id[2],
         currentPage: this.currentPage,
         pageSize: this.pageSize,
         // cid:"",
@@ -417,7 +242,7 @@ export default {
         token: this.$cookie.get("token"),
         username:this.$cookie.get("username")
 
-      }}) 
+      }})
       .then(res => {
         this.candidatesBox = res.data.data;
         this.showCanBox = this.candidatesBox;
@@ -493,7 +318,7 @@ export default {
       }
       /*else {
         this.showCanBox = [];
-        this.showcard = false; 
+        this.showcard = false;
         for (var item in this.candidatesBox) {
           if (
             String(this.candidatesBox[item].desiredjob)
@@ -542,6 +367,7 @@ export default {
 }
 .candidates-session {
   position: relative;
+  min-height: calc(100vh - 60px - 60px);
 }
 .candidates-info {
   background-color: #fafafa;

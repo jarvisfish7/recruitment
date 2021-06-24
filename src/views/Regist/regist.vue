@@ -69,7 +69,7 @@
             >
               <div>
                 <el-form-item label="账 号：" prop="user" >
-                  <el-input v-model="registForm.user" on-blur="checkUsername"></el-input>
+                  <el-input v-model="registForm.user" ></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="pass" >
                   <el-input type="password" v-model="registForm.pass" autocomplete="off"></el-input>
@@ -99,6 +99,7 @@
 
 <script>
 import { postRequest } from '../../util/api'
+import {setUserId,setUserName,setCompanyId } from '../../util/auth'
 
 export default {
   data() {
@@ -132,34 +133,33 @@ export default {
         } else {
           //将用户名传入后台校验是否重复
           if (this.flag == "0") {
-            this.$axios
-              .post("/regist/isExist", {
-                user: this.registForm.user,
-                pass: "",
-              })
+            postRequest("/user/isExist", {
+              user: this.registForm.user,
+              pass: "",})
               .then(res => {
-                console.log(res.data.msg ,this.registForm.user,res.data.status)
-                if (res.data.status == 500) {
-                  alert(res.data.msg)
-                  callback(new Error(res.data.msg));
-                  this.registForm.user = ""
+                console.log(res.data.message ,this.registForm.user,res.data.status)
+                if (res.data.status == 400) {
+                  callback(new Error(res.data.message));
+                  // this.registForm.user = ""
+                } else {
+                  callback()
                 }
               })
               .catch(err => {
                 console.log(err);
               });
           } else {
-            this.$axios
-              .post("/company/isExist", {
-                user: this.registForm.user,
-                pass: "",
-              })
+            postRequest("/company-user/isExist", {
+              user: this.registForm.user,
+              pass: "",})
               .then(res => {
-                console.log(res.data.msg ,this.registForm.user,res.data.status)
-                if (res.data.status === 500) {
-                  alert(new Error(res.data.msg))
-                  callback(new Error(res.data.msg));
-                  this.registForm.user = ""
+                console.log(res.data.message ,this.registForm.user,res.data.status)
+                if (res.data.status === 400) {
+                  // alert(new Error(res.data.message))
+                  callback(new Error(res.data.message));
+                  // this.registForm.user = ""
+                }else {
+                  callback()
                 }
               })
               .catch(err => {
@@ -167,7 +167,6 @@ export default {
               });
           }
         }
-        callback();
       }
     };
     return {
@@ -188,55 +187,48 @@ export default {
     };
   },
   created () {
-    postRequest("",).then(response=>{
-      this.xxx = response.data;
-    })
   },
   methods: {
     handleSelect(key, keyPath) {
       this.flag = key;
       console.log(key, keyPath);
     },
-    submitForm(registForm) {
+    submitForm() {
+      alert("准备能提交1")
       this.$refs.registForm.validate(valid => {
+        alert("准备能提交2")
         if (valid) {
-          if (this.flag == "0") {
-            this.$axios
-              .post(
-                "/regist",
-               {
-                  user: this.registForm.user,
-                  pass: this.registForm.pass,
-                },
-              )
+          alert("准备能提交3")
+          if (this.flag === "0") {
+            alert("能提交")
+            this.$store.dispatch("regist",this.registForm)
               .then(res => {
-                if (res.status === 200) {
-                   this.$cookie.set('userid',res.data.data.userid)
-                  this.$cookie.set('username',res.data.data.username)
-                  this.$cookie.set('token',res.data.data.token)
-                  this.$cookie.set('cid',res.data.data.cid)
+                const {data} = res
+                  //  this.$cookie.set('userid',res.data.data.userid)
+                  // this.$cookie.set('username',res.data.data.username)
+                  // this.$cookie.set('token',res.data.data.token)
+                  // this.$cookie.set('cid',res.data.data.cid)
+                setUserId(data.user.id)
+                setUserName(data.user.username)
+                alert("回来了，没跳转！")
                   // console.log(this.registForm.user,this.registForm.pass)
-                  this.$router.push("candreg");
-                }
+                  this.$router.push("/candreg");
               })
               .catch(err => {
-                console(err);
+                console.log(err);
               });
-          }else if (this.flag == "1") {
-            this.$axios
-              .post("/regist/company", {
-                user: this.registForm.user,
-                pass: this.registForm.pass,
-              })
+          }else if (this.flag === "1") {
+            alert("老板准备能提交3")
+            this.$store.dispatch("bossregist",this.registForm)
               .then(res => {
-                if (res.status === 200) {
-                   this.$cookie.set('username',res.data.data.username)
-                  this.$cookie.set('token',res.data.data.token)
-                  this.$router.push("/bossreg");
-                }
+                const {data} = res
+                setUserId(data.user.id)
+                setUserName(data.user.username)
+                alert("boss回来了，没跳转！")
+                this.$router.push("/bossreg");
               })
               .catch(err => {
-                console(err);
+                console.log(err);
               });
           }
         } else {
@@ -253,7 +245,8 @@ export default {
 .regist-body {
   width: 100%;
   height: 100%;
-  background: url("../../../public/data/images/loginviewBg1.png") no-repeat;
+  /*background: url("../../../public/data/images/loginviewBg1.png") no-repeat;*/
+  background: url("../../../public/data/images/loginviewBg1.png");
   background-size: cover;
 }
 .regist {

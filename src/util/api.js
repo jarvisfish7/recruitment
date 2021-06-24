@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import router from '../router'
 import store from '../store'
-import { Message as $message } from 'element-ui'
+import { MessageBox} from 'element-ui'
 
 //请求拦截器
 axios.interceptors.request.use(request=>{
@@ -15,6 +15,48 @@ axios.interceptors.request.use(request=>{
   return Promise.reject(error);
 })
 
+// response interceptor
+axios.interceptors.response.use(
+  response => {
+    const res = response.data
+
+    // if the custom code is not 20000, it is judged as an error.
+    if (res.status !== 200 && res.status !== 400) {
+      console.log(res)
+      Message({
+        message: res.message || 'Error',
+        type: 'error',
+        duration: 5 * 1000
+      })
+
+      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+      if (res.status === 502 || res.status === 501 || res.status === 500) {
+        // to re-login
+        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+          confirmButtonText: 'Re-Login',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+          store.dispatch('user/resetToken').then(() => {
+            location.reload()
+          })
+        })
+      }
+      return Promise.reject(new Error(res.message || 'Error'))
+    } else {
+      return response
+    }
+  },
+  error => {
+    console.log('err' + error) // for debug
+    Message({
+      message: error.message,
+      type: 'error',
+      duration: 5 * 1000
+    })
+    return Promise.reject(error)
+  }
+)
 
 // // response interceptor
 // axios.interceptors.response.use(response => {
