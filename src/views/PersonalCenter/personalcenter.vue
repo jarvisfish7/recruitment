@@ -39,23 +39,14 @@ export default {
       if (key === "3") {
         var c = confirm("确认退出登录？");
         if (c) {
-          this.$cookie.delete("token");
-          this.$cookie.delete('userid')
-          this.$cookie.delete("username");
-          this.$cookie.delete("cid");
-          this.$router.replace("/");
-          this.$router.go(0)
-
+          this.$store.dispatch("logout");
         }
       }
       console.log(key, keyPath);
     }
   },
   mounted() {
-    this.username = this.$cookie.get("username")
-    this.token =this.$cookie.get("token")
-    this.userid = this.$cookie.get('userid')
-    this.cid = this.$cookie.get('cid')
+    this.userid = this.$store.state.userid
   }
 };
 </script>

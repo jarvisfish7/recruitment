@@ -30,7 +30,7 @@ axios.interceptors.response.use(
       })
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.status === 502 || res.status === 501 || res.status === 500) {
+      if (res.status === 502 || res.status === 501) {
         // to re-login
         MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
           confirmButtonText: 'Re-Login',
@@ -41,9 +41,17 @@ axios.interceptors.response.use(
             location.reload()
           })
         })
+      }else if (res.status === 500){
+        MessageBox.confirm('请求500错误', '请求500错误', {
+          confirmButtonText: 'Re-Login',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+        })
       }
       return Promise.reject(new Error(res.message || 'Error'))
-    } else {
+    }
+    else {
       return response
     }
   },
@@ -86,7 +94,10 @@ axios.interceptors.response.use(
 //   console.error(error)
 //   return Promise.reject(error)
 // })
-let base = 'http://localhost:8181'
+
+export const base = 'http://localhost:8181'
+export const imgbase = 'http://localhost:8181/pic/'
+
 //传送json格式的post请求
 export const postRequest = (url, params) => {
   return axios({
@@ -98,10 +109,10 @@ export const postRequest = (url, params) => {
 export const getRequest = (url, params) => {
   return axios({
     method: 'get',
-    url: `${base}${url}`,
-    data: params,
+    url: params===undefined? `${base}${url}` :`${base}${url}/${params}`
   })
 }
+
 export const deleteRequest = (url, params) => {
   return axios({
     method: 'delete',

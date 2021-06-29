@@ -10,18 +10,18 @@
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column label="发布时间" width="120">
         <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.time }}</span>
+          <span style="margin-left: 10px">{{ scope.row.createTime }}</span>
         </template>
       </el-table-column>
       <el-table-column label="职 位" width="120">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
-            <p>职 位: {{ scope.row.jobname }}</p>
+            <p>职 位: {{ scope.row.jobName }}</p>
             <p>月 薪: {{ scope.row.salary }}</p>
             <p>学 历：{{ scope.row.academic }}</p>
             <p>经 验：{{ scope.row.experience }}</p>
             <div slot="reference" class="name-wrapper">
-              <el-tag size="medium">{{ scope.row.jobname }}</el-tag>
+              <el-tag size="medium">{{ scope.row.jobName }}</el-tag>
             </div>
           </el-popover>
         </template>
@@ -33,7 +33,7 @@
           <el-button
             size="mini"
             type="danger"
-            @click="handleDelete(scope.$index, tableData,scope.row)"
+            @click="open(scope.$index, tableData,scope.row)"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -41,27 +41,21 @@
   </div>
 </template>
 <script>
+import { getRequest, postRequest } from '../../util/api'
+import { getCompanyId, getUserId } from '../../util/auth'
 export default {
   data() {
     return {
       tableData: [],
-      token: "",
-      username: "",
-      comid: ""
+      companyid: ""
     };
   },
   created() {
-    this.$axios
-      .get("/offlinejob/all", {
-        params: {
-          token: this.$cookie.get("token"),
-          username: this.$cookie.get('username'),
-          comid: this.$cookie.get('comid')
-        }
-      })
+    this.companyid = this.$store.state.companyid
+    getRequest("/job/selectNOListBycid", this.companyid)
       .then(res => {
         if (res.data.status === 200) {
-          this.tableData = res.data.message;
+          this.tableData = res.data.data;
         }
       })
       .catch(err => {
@@ -69,17 +63,40 @@ export default {
       });
   },
   methods: {
+    open(index, row, m) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        getRequest("/job/delete", m.jobId)
+          .then(res => {
+            if (res.data.status === 200) {
+              row.splice(index, 1);
+              alert("成功删除！")
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    },
+
     handleDelete(index, row, m) {
-      this.$axios
-        .post("/offlinejob/down", {
-          jid: m.jid,
-          token: this.token,
-          username: this.username,
-          comid: this.comid
-        })
+      getRequest("/job/delete", m.jobId)
         .then(res => {
           if (res.data.status === 200) {
             row.splice(index, 1);
+            alert("成功删除！")
           }
         })
         .catch(err => {
@@ -88,9 +105,6 @@ export default {
     }
   },
   mounted() {
-    this.username = this.$cookie.get("username");
-    this.token = this.$cookie.get("token");
-    this.comid = this.$cookie.get("comid");
   }
 };
 </script>

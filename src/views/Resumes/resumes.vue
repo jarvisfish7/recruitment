@@ -75,7 +75,7 @@
           <p>
             <span>{{ruleForm.school}}</span>
             <span>|</span>
-            <span>{{ruleForm.date1}}-{{ruleForm.date2}}</span>
+            <span>{{ruleForm.begindate}}-{{ruleForm.enddate}}</span>
             <span>|</span>
             <span>{{ruleForm.subject}}</span>
             <span>|</span>
@@ -218,11 +218,11 @@
             <p class="resumes-title">教育经验</p>
             <el-form-item label="时 间：">
               <el-col :span="11">
-                <el-form-item prop="date1">
+                <el-form-item prop="begindate">
                   <el-date-picker
                     type="date"
                     placeholder="选择日期"
-                    v-model="ruleForm.date1"
+                    v-model="ruleForm.begindate"
                     style="width: 100%;"
                     value-format="yyyy-MM-dd"
                   ></el-date-picker>
@@ -230,11 +230,11 @@
               </el-col>
               <el-col class="line" :span="2" style="text-align:center">—</el-col>
               <el-col :span="11">
-                <el-form-item prop="date2">
+                <el-form-item prop="enddate">
                   <el-date-picker
                     placeholder="选择日期"
                     value-format="yyyy-MM-dd"
-                    v-model="ruleForm.date2"
+                    v-model="ruleForm.enddate"
                     style="width: 100%;"
                   ></el-date-picker>
                 </el-form-item>
@@ -340,6 +340,8 @@
 </template>
 
 <script>
+import {getRequest,postRequest} from '../../util/api'
+
 export default {
   data() {
     var telephoneTest = (rule, value, callback) => {
@@ -351,9 +353,8 @@ export default {
       }
     };
     return {
-      token: "",
-      username: "",
-      cid: "",
+      resumeId:"",
+      companyid: "",
       userid: "",
       dialog: false,
       loading: false,
@@ -372,8 +373,8 @@ export default {
         school: "",
         subject: "",
         academic: "",
-        date1: "",
-        date2: "",
+        begindate: "",
+        enddate: "",
         projectname: "",
         duty: "",
         starttime: "",
@@ -436,7 +437,7 @@ export default {
         subject: [{ required: true, message: "请输入专业", trigger: "blur" }],
         academic: [{ required: true, message: "请选择学历", trigger: "blur" }],
 
-        date1: [
+        begindate: [
           {
             type: "string",
             required: true,
@@ -444,7 +445,7 @@ export default {
             trigger: "change"
           }
         ],
-        date2: [
+        enddate: [
           {
             type: "string",
             required: true,
@@ -456,11 +457,12 @@ export default {
     };
   },
   created() {
-    this.$axios
-      .get("/mybase/base", { params: { token: this.$cookie.get('token') } })
+    this.userid=this.$store.state.userid
+    getRequest("/resume/getByuid",this.userid)
       .then(res => {
         if (res.status === 200) {
           this.ruleForm = res.data.data;
+          this.resumeId = res.data.data.resumeId;
         }
       });
   },
@@ -468,8 +470,7 @@ export default {
     submitForm(ruleForm) {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
-          this.$axios
-            .post("/resumes/edit", {
+          postRequest("/resume/edit", {
               name: this.ruleForm.name,
               sex: this.ruleForm.sex,
               birth: this.ruleForm.birth,
@@ -483,8 +484,8 @@ export default {
               school: this.ruleForm.school,
               subject: this.ruleForm.subject,
               academic: this.ruleForm.academic,
-              date1: this.ruleForm.date1,
-              date2: this.ruleForm.date2,
+              begindate: this.ruleForm.begindate,
+              enddate: this.ruleForm.enddate,
               projectname: this.ruleForm.projectname,
               duty: this.ruleForm,
               starttime: this.ruleForm.starttime,
@@ -550,10 +551,8 @@ export default {
   //   }
   // },
   mounted() {
-    this.username = this.$cookie.get("username");
-    this.token = this.$cookie.get("token");
-    this.userid = this.$cookie.get("userid");
-    this.cid = this.$cookie.get("cid");
+    this.userid = this.$store.state.userid;
+    this.companyid = this.$store.state.companyid;
   }
 };
 </script>

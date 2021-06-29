@@ -63,7 +63,7 @@
 
 <script>
 import { postRequest } from '../../util/api'
-import {setUserId,setUserName,setCompanyId } from '../../util/auth'
+import {setUserId,setUserName,setCompanyId,getUserId } from '../../util/auth'
 
 export default {
   data() {
@@ -105,7 +105,7 @@ export default {
         if (valid) {
           postRequest("/company/add", {
               companyId:"",
-              userId:this.$store.state.userid,
+              userId:getUserId(),
               name: this.companyData.company,
               kind: this.companyData.kind,
               place: this.companyData.place,

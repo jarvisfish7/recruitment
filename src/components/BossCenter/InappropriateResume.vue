@@ -4,13 +4,12 @@
       <h2 class="un-title">不 合 适 简 历</h2>
       <el-divider></el-divider>
       <el-card>
-        <div v-for="(u, index) in resumeBox" :key="u.id">
+        <div v-for="(u, index) in resumeBox" :key="u.deliverId">
           <div class="box-card">
-            <el-avatar shape="square" :size="80" :src="u.headimg"></el-avatar>
+            <el-avatar shape="square" :size="80" :src="imgbase+u.avatar"></el-avatar>
             <div class="un-info clearfix">
               <h2>
-                <span class="resumename">{{u.resumename}}</span>
-                <span class="un-time">投递时间：{{u.time}}</span>
+                <span class="un-time">投递时间：{{u.postTime}}</span>
               </h2>
               <p>
                 <span>{{u.name}}</span>
@@ -24,7 +23,7 @@
               <p>
                 <span class="un-job">应聘职位：{{u.desiredjob}}</span>
                 <span class="un-result">
-                  <i class="el-icon-delete" @click="del(index,u.cid)">删除</i>
+                  <i class="el-icon-delete" @click="del(index,u.deliverId)">删除</i>
                 </span>
               </p>
             </div>
@@ -36,58 +35,58 @@
 </template>
 
 <script>
+import { postRequest ,getRequest,imgbase} from '../../util/api'
+
 export default {
   data() {
     return {
+      imgbase,
       token: "",
       username: "",
-      comid: "",
+      companyId: "",
       resumeBox: []
     };
   },
   created() {
-    this.$axios
-      .get("/bossbase/unfit", {
-         params: {
-          token: this.$cookie.get("token"),
-          username: this.$cookie.get('username'),
-          comid: this.$cookie.get('comid')
-        }
-      })
+    this.companyId = this.$store.state.companyid
+    postRequest('/deliver/getBycid', {
+      status: 2,
+      companyId: Number(this.companyId)
+    })
       .then(res => {
-        if(res.data.status === 200){
-        this.resumeBox = res.data.data;
-        }
+        this.resumeBox = res.data.data
       })
       .catch(err => {
-        console.log(err);
-      });
+        console.log(err)
+      })
   },
   methods: {
+    /**
+     * 设置status 4 就是通知面试后删除，1是BOSS未处理，2，是通知面试，3，是不合适，6是不合适删除
+     * @param index
+     * @param id
+     */
     del(index, id) {
-      this.$axios
-        .get("/bossbase/unfit/del", {params:{
-          cid: id,
-          token: this.token,
-          username: this.username,
-          comid: this.comid
+      postRequest('/deliver/setStatus', {
+        id: id,
+        status: 6
+      }).then(res => {
+        if (res.data.status === 200) {
+          this.resumeBox.splice(index, 1)
+          this.$notify({
+            title: '删除成功',
+            type: 'success',
+            position: 'bottom-left',
+            offset: 100
+          })
         }
-        })
-        .then(res => {
-          if (res.data.status === 200) {
-            this.resumeBox.splice(index, 1);
-          }
-        })
+      })
         .catch(err => {
-          console.log(err);
-        });
-      this.resumeBox.splice(index, 1);
+          console.log(err)
+        })
     },
   },
   mounted() {
-    this.username = this.$cookie.get("username");
-    this.token = this.$cookie.get("token");
-    this.comid = this.$cookie.get("comid");
   }
 };
 </script>

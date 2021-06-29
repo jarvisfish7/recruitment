@@ -1,44 +1,47 @@
 <template>
-  <div class="bossbase-session w">
+  <div class="bossbase-session cw">
     <el-main>
       <div class="bossbase-first clearfix">
-        <el-upload
-          class="avatar-uploader"
-          action="D:\www\IT-Web\static\data\images"
-          :show-file-list="false"          
-          :before-upload="beforeAvatarUpload"
-          :on-success="handleAvatarSuccess"
-        >
-          <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
+        <div style="width:200px ;float: left">
+          <div style="margin: 0 auto 5px;width: 180px;height: 180px">
 
+            <el-upload class="avatar-uploader" ref="upload" action="#" :limit="1" :auto-upload="false"
+                       :before-upload="beforeUpdate"
+                       :http-request="httpRequest"
+            >
+              <img v-if="imageUrl" :src="imageUrl" class="avatar"/>
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </div>
+          <el-button icon="el-icon-refresh" slot="trigger" @click="handleSelect" style="float: left">选择</el-button>
+          <el-button icon="el-icon-check" type="primary" @click="handleUpload" style="float: right">上传</el-button>
+        </div>
         <div class="bb-f-l" v-show="!dialog[0].val">
           <p class="bb-f-l-title">
-            <span class="b-c-name">{{companyData.company}}</span>
+            <span class="b-c-name">{{ companyData.company }}</span>
             <i class="el-icon-edit-outline bb-edit" @click="dialog[0].val = true"></i>
           </p>
 
           <p>
             <span>地 点：</span>
-            <span>{{companyData.place}}</span>
+            <span>{{ companyData.place }}</span>
           </p>
           <p>
             <span>领 域：</span>
-            <span>{{companyData.kind}}</span>
+            <span>{{ companyData.kind }}</span>
           </p>
           <p>
             <span>融 资：</span>
-            <span>{{companyData.stage}}</span>
+            <span>{{ companyData.stage }}</span>
           </p>
           <p>
             <span>规 模：</span>
-            <span>{{companyData.scale}}</span>
+            <span>{{ companyData.scale }}</span>
           </p>
           <p>
             <span>公司主页：</span>
             <span>
-              <a href="companyData.url">{{companyData.url}}</a>
+              <a href="companyData.url">{{ companyData.url }}</a>
             </span>
           </p>
         </div>
@@ -47,7 +50,7 @@
           <div class="demo-drawer__content">
             <el-form :model="companyData" :rules="rules" ref="companyData" required>
               <el-form-item label="公司全称" label-width="90px" required>
-                <el-input v-model="companyData.company" autocomplete="off"></el-input>
+                <el-input v-model="companyData.name" autocomplete="off"></el-input>
               </el-form-item>
               <el-form-item label="所在城市" label-width="90px" prop="place" required>
                 <el-input v-model="companyData.place" autocomplete="off"></el-input>
@@ -90,14 +93,14 @@
       </div>
       <el-divider></el-divider>
       <!-- 公司简介 -->
-      <div class="bossbase-next">
+      <div class="bossbase-next content">
         <p>
           <span class="h2-title">公 司 简 介</span>
           <i class="el-icon-edit-outline bb-edit" @click="dialog[1].val = true"></i>
         </p>
-        <p v-show="!dialog[1].val">&nbsp;&nbsp;&nbsp;{{companyData.comintroduce}}</p>
+        <p v-show="!dialog[1].val">&nbsp;&nbsp;&nbsp;{{ companyData.comintroduce }}</p>
         <!-- 公司简介修改 -->
-        <div direction="ltr" v-show="dialog[1].val">
+        <div direction="ltr" v-show="dialog[1].val" class="content">
           <div class="demo-drawer__content">
             <el-form :model="companyData" ref="companyData" :rules="rules">
               <el-input
@@ -117,12 +120,12 @@
 
       <el-divider></el-divider>
       <!-- 公司地址 -->
-      <div class="bossbase-next">
+      <div class="bossbase-next content">
         <p>
           <span class="h2-title">公 司 地 址</span>
           <i class="el-icon-edit-outline bb-edit" @click="dialog[2].val = true"></i>
         </p>
-        <p v-show="!dialog[2].val">&nbsp;{{companyData.address}}</p>
+        <p v-show="!dialog[2].val">&nbsp;{{ companyData.address }}</p>
         <!-- 公司地址修改 -->
         <div direction="ltr" v-show="dialog[2].val">
           <div class="demo-drawer__content">
@@ -144,33 +147,33 @@
 
       <el-divider></el-divider>
       <!-- 正在招聘 -->
-      <div class="bossbase-next">
+      <div class="bossbase-next content">
         <p>
           <span class="h2-title">正 在 招 聘 职 位</span>
         </p>
-        <div v-for="b in jobBox" :key="b.id">
-          <div class="job-opening clearfix">
+        <div v-for="b in jobBox" :key="b.jobId">
+          <div class="job-opening clearfix content">
             <div class="j-one">
               <p class="j-f j-jobname">
-                <span>{{b.jobname}}</span>
-                <span class="j-hr">{{b.department}}</span>
+                <span>{{ b.jobName }}</span>
+                <span class="j-hr">{{ b.department }}</span>
               </p>
               <p class="j-s">
-                <span class="j-salary">{{b.salary}}</span>
+                <span class="j-salary">{{ b.salary }}</span>
                 <span></span>
-                <span>{{b.place}}</span>
+                <span>{{ b.place }}</span>
                 <span>|</span>
-                <span>{{b.experience}}</span>
+                <span>{{ b.experience }}</span>
                 <span>|</span>
-                <span>{{b.academic}}</span>
+                <span>{{ b.academic }}</span>
               </p>
             </div>
             <div class="j-three">
               <p class="j-f">
-                <span class="j-hr">{{b.hr}}</span>
+                <span class="j-hr">{{ b.hr }}</span>
               </p>
               <p class="j-s">
-                <span class="j-time">发布于：{{b.time}}</span>
+                <span class="j-time">发布于：{{ b.createTime }}</span>
               </p>
             </div>
           </div>
@@ -182,75 +185,164 @@
 </template>
 
 <script>
+import { getRequest, postRequest,imgbase} from '../../util/api'
+import { getCompanyId } from '../../util/auth'
+
 export default {
-  data() {
+  data () {
     return {
-      token: "",
-      username: "",
-      comid: "",
+      avatar: '',
+      token: '',
+      username: '',
       dialog: [{ val: false }, { val: false }, { val: false }],
 
       timer: null,
       companyData: {},
       rules: {
-        company: [{ required: true, message: "请输入公司名", trigger: "blur" }],
+        company: [{
+          required: true,
+          message: '请输入公司名',
+          trigger: 'blur'
+        }],
         place: [
-          { required: true, message: "请输入公司所在城市", trigger: "blur" }
+          {
+            required: true,
+            message: '请输入公司所在城市',
+            trigger: 'blur'
+          }
         ],
-        kind: [{ required: true, message: "请输入公司领域", trigger: "blur" }],
-        stage: [{ required: true, message: "请选择融资", trigger: "change" }],
-        scale: [{ required: true, message: "请选择规模", trigger: "change" }],
-        url: [{ required: true, message: "请输入公司网址", trigger: "blur" }],
+        kind: [{
+          required: true,
+          message: '请输入公司领域',
+          trigger: 'blur'
+        }],
+        stage: [{
+          required: true,
+          message: '请选择融资',
+          trigger: 'change'
+        }],
+        scale: [{
+          required: true,
+          message: '请选择规模',
+          trigger: 'change'
+        }],
+        url: [{
+          required: true,
+          message: '请输入公司网址',
+          trigger: 'blur'
+        }],
         comintroduce: [
-          { required: true, message: "请输入公司描述", trigger: "blur" }
+          {
+            required: true,
+            message: '请输入公司描述',
+            trigger: 'blur'
+          }
         ],
         address: [
-          { required: true, message: "请输入公司具体地址", trigger: "blur" }
+          {
+            required: true,
+            message: '请输入公司具体地址',
+            trigger: 'blur'
+          }
         ]
       },
       jobBox: [],
-      imageUrl: ""
-    };
+      imageUrl: '',
+      companyid: '',
+    }
   },
-  created() {
-    this.$axios
-      .get("/bosebase/company", {
-        params: {
-          token: this.$cookie.get("token"),
-          username: this.$cookie.get("username"),
-          comid: this.$cookie.get("comid")
-        }
-      })
+  created () {
+    this.companyid = getCompanyId()
+    getRequest('/company/getByid', this.companyid)
       .then(res => {
-        if (res.status === 200) {
-          this.companyData = res.data.data;
+        if (res.data.status === 200) {
+          this.companyData = res.data.data
+          this.imageUrl = imgbase+this.companyData.avatar;
         }
       })
       .catch(err => {
-        console.log(err);
-      });
+        console.log(err)
+      })
 
-    this.$axios
-      .get("/postjob/all", {
-        params: {
-          token: this.$cookie.get("token"),
-          username: this.$cookie.get("username"),
-          comid: this.$cookie.get("comid")
-        }
-      })
+    getRequest('/job/selectListBycid', this.companyid)
       .then(res => {
-        this.jobBox = res.data.data;
+        this.jobBox = res.data.data
       })
       .catch(err => {
-        console.log(err);
-      });
+        console.log(err)
+      })
   },
+
   methods: {
-    handleAvatarSuccess(res, file) {
-      this.$axios.post("/bosebase/edit", {
+    open1(message) {
+      this.$notify({
+        title: '成功',
+        message: message,
+        type: 'success'
+      });
+    },
+
+    open2(message) {
+      this.$notify({
+        title: '警告',
+        message: message,
+        type: 'warning'
+      });
+    },
+
+    open3(message) {
+      this.$notify.info({
+        title: '消息',
+        message: message
+      });
+    },
+
+    open4(message) {
+      this.$notify.error({
+        title: '错误',
+        message: message
+      });
+    },
+    handleSelect() {
+      this.$refs.upload.clearFiles()
+    },
+    handleUpload() {
+      if (this.$refs.upload.uploadFiles.length > 0) {
+        this.$refs.upload.submit()
+      } else {
+        this.$message.error('请选择图片')
+      }
+    },
+    httpRequest({ file }) {
+      const data = new FormData()
+      data.append('avatar', file)
+      data.append('companyid',this.comapnyid)
+      postRequest('/company/uploadImg',data)
+        .then(res => {
+        if (res.data.status===200){
+          this.open1("上传图片成功！")
+          this.imageUrl = imgbase+res.data.url;
+          console.log(this.imageUrl);
+        }else {
+          this.open4("上传图片失败！")
+        }
+      }).catch(() => this.$refs.upload.clearFiles())
+    },
+    beforeUpdate(file) {
+      if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+        this.$message.error('上传头像图片只能是 JPG 或 PNG 格式')
+        return false
+      } else if (file.size > 1024 * 1024) {
+        this.$message.error('上传头像图片大小不能超过 1MB')
+        return false
+      }
+      return true
+    },
+    handleAvatarSuccess (res, file) {
+      this.$axios.post('/bosebase/edit', {
         token: this.token,
         username: this.username,
-        comid: this.comid,
+        comapnyid: this.comapnyid,
         company: this.companyData.company,
         place: this.companyData.place,
         kind: this.companyData.kind,
@@ -261,37 +353,36 @@ export default {
         address: this.companyData.address,
         logourl: this.companyData.logourl
       })
-      .then(res => {
-        if(res.data.status === 200){
-          this.companyData.logourl = URL.createObjectURL(file.raw);
-          alert(this.companyData.url)
+        .then(res => {
+          if (res.data.status === 200) {
+            this.companyData.logourl = URL.createObjectURL(file.raw)
+            alert(this.companyData.url)
+          } else {
+            alert('上传失败')
+          }
+        })
 
-        }else{
-          alert('上传失败')
-        }
-      })
-      
     },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+    beforeAvatarUpload (file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isJPG) {
-        this.$message.error("上传图片只能是 JPG 格式!");
+        this.$message.error('上传图片只能是 JPG 格式!')
       }
       if (!isLt2M) {
-        this.$message.error("上传图片大小不能超过 2MB!");
+        this.$message.error('上传图片大小不能超过 2MB!')
       }
-      return isJPG && isLt2M;
+      return isJPG && isLt2M
     },
-    handleClose(a) {
-      this.$confirm("确定要提交表单吗？")
+    handleClose (a) {
+      this.$confirm('确定要提交表单吗？')
         .then(_ => {
           this.$axios
-            .post("/bosebase/edit", {
+            .post('/bosebase/edit', {
               token: this.token,
               username: this.username,
-              comid: this.comid,
+              comapnyid: this.comapnyid,
               company: this.companyData.company,
               place: this.companyData.place,
               kind: this.companyData.kind,
@@ -303,45 +394,56 @@ export default {
             })
             .then(res => {
               if (res.data.status === 200) {
-               this.dialog.forEach(item =>{
-                 if(item.val === true){
-                   item.val = false
-                 }
-               })
+                this.dialog.forEach(item => {
+                  if (item.val === true) {
+                    item.val = false
+                  }
+                })
               } else {
-                alert("修改失败");
+                alert('修改失败')
               }
             })
             .catch(err => {
-              console.log(err);
-            });
+              console.log(err)
+            })
 
           // this.timer = setTimeout(() => {
-          this.dialog[a].val = false;
+          this.dialog[a].val = false
           //  this.$set(this.dialog[a], "val", false);
           // }, 2000);
         })
-        .catch(_ => {});
+        .catch(_ => {
+        })
     },
-    cancelForm: function(a, companyData) {
+    cancelForm: function (a, companyData) {
       this.$nextTick(() => {
-        this.$refs.companyData.resetFields();
-      });
-      this.$set(this.dialog[a], "val", false);
+        this.$refs.companyData.resetFields()
+      })
+      this.$set(this.dialog[a], 'val', false)
       // console.log(this.dialog[a].val);
-      clearTimeout(this.timer);
+      clearTimeout(this.timer)
     }
   },
-  mounted() {
-    this.username = this.$cookie.get("username");
-    this.token = this.$cookie.get("token");
-    this.comid = this.$cookie.get("comid");
+  mounted () {
+    this.username = this.$store.state.username
+    this.token = this.$store.state.token
+    this.comapnyid = this.$store.state.companyid
   }
-};
+}
 </script>
 
 <style>
-.bossbase-session {
+.content {
+  width: 725px;
+}
+
+.cw {
+  width: 1400px;
+  height: 680px;
+  margin: auto;
+}
+
+.basdasossbase-session {
   width: 840px;
   padding: 0 40px;
   box-sizing: border-box;
@@ -357,9 +459,11 @@ export default {
   background-color: aliceblue;
   float: left;
 }
+
 .bossbase-first .avatar-uploader .el-upload:hover {
   border-color: #409eff;
 }
+
 .bossbase-first .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
@@ -368,11 +472,13 @@ export default {
   line-height: 178px;
   text-align: center;
 }
+
 .bossbase-first .avatar {
   width: 178px;
   height: 178px;
   display: block;
 }
+
 .bb-f-l {
   position: relative;
   width: 450px;
@@ -381,13 +487,16 @@ export default {
   /* margin: 10px 0 10px 50px; */
   color: #333;
 }
+
 .bb-f-l .bb-f-l-title {
   margin-bottom: 20px;
 }
+
 .bb-f-l .b-c-name {
   font-size: 26px;
   margin: 10px 10px 30px;
 }
+
 .bb-edit {
   position: absolute;
   float: right;
@@ -396,20 +505,25 @@ export default {
   right: 0;
   cursor: pointer;
 }
+
 .bb-f-l p {
   margin: 7px;
 }
+
 .bb-f-l p span {
   margin: 0 7px;
   font-size: 16px;
 }
+
 .el-drawer {
   z-index: 999999999;
 }
+
 .bossbase-next {
   margin: 10px 40px;
   color: #333;
 }
+
 .bossbase-next .h2-title {
   font-size: 24px;
   margin-bottom: 20px;
@@ -423,6 +537,7 @@ export default {
   background-color: rgb(252, 70, 70);
   display: inline-block;
 }
+
 .bossbase-next p {
   position: relative;
   color: #333;
@@ -437,6 +552,7 @@ export default {
   border-radius: 3px;
   margin: 3px 0;
 }
+
 .j-one {
   width: 300px;
   margin: 0 10px 0 0;
@@ -444,6 +560,7 @@ export default {
   height: 70px;
   color: #61687c;
 }
+
 .j-f {
   position: absolute;
   padding: 0 5px;
@@ -453,6 +570,7 @@ export default {
   box-sizing: border-box;
   line-height: 40px;
 }
+
 .j-f span {
   position: absolute;
   float: left;
@@ -460,9 +578,11 @@ export default {
   line-height: 40px;
   top: 0;
 }
+
 .j-s {
   height: 30px;
 }
+
 .j-s span {
   height: 30px;
   float: left;
@@ -470,18 +590,22 @@ export default {
   margin: 0 5px;
   top: 0;
 }
+
 .j-one p {
   position: relative;
   width: 350px;
 }
+
 .j-jobname {
   color: black;
 }
+
 .j-salary {
   right: 10px;
   color: red;
   font-size: 16px;
 }
+
 .j-three {
   float: left;
   height: 70px;
@@ -489,10 +613,12 @@ export default {
   width: 270px;
   margin: 0 7px;
 }
+
 .j-three p {
   position: relative;
   width: 270px;
 }
+
 .j-hr,
 .j-time {
   position: absolute;
@@ -500,6 +626,7 @@ export default {
   color: #8d92a1;
   right: 10px;
 }
+
 .j-hr {
   color: black;
 }

@@ -4,17 +4,15 @@
       <h2 class="un-title">已 通 知 面 试</h2>
       <el-divider></el-divider>
       <el-card>
-        <div v-for="(u,index) in resumeBox" :key="u.id">
+        <div v-for="(u,index) in resumeBox" :key="u.deliverId">
           <div class="box-card">
-            <el-avatar shape="square" :size="80" :src="u.headimg" @click="candidatesJum(u.cid)"></el-avatar>
+            <el-avatar shape="square" :size="80" :src="imgbase+u.avatar" @click="candidatesJum(u.userId)"></el-avatar>
             <div class="un-info clearfix">
               <h2>
-                <span class="resumename">{{u.resumename}}</span>
-                <span class="un-time">投递时间：{{u.time}}</span>
+                <span class="resumename" @click="candidatesJum(u.userId)">{{ u.name }}</span>
+                <span class="un-time">投递时间：{{u.postTime}}</span>
               </h2>
               <p>
-                <span>{{u.name}}</span>
-                <span>/</span>
                 <span>{{u.sex}}</span>
                 <span>/</span>
                 <span>{{u.academic}}</span>
@@ -24,7 +22,7 @@
               <p>
                 <span class="un-job">应聘职位：{{u.desiredjob}}</span>
                 <span class="un-result">
-                  <i class="el-icon-delete" @click.prevent="del(index,u.cid)">删除</i>
+                  <i class="el-icon-delete" @click.prevent="del(index,u.deliverId)">删除</i>
                 </span>
               </p>
             </div>
@@ -36,72 +34,64 @@
 </template>
 
 <script>
+import { postRequest ,getRequest,imgbase} from '../../util/api'
+
 export default {
   data() {
     return {
+      imgbase,
       token: "",
       username: "",
-      comid: "",
+      companyId: "",
       resumeBox: []
     };
   },
   created() {
-    this.$axios
-      .get("/bossbase/unprocessed/notify", {
-        params: {
-          token: this.$cookie.get("token"),
-          username: this.$cookie.get("username"),
-          comid: this.$cookie.get("comid")
-        }
-      })
+    this.companyId = this.$store.state.companyid
+    postRequest('/deliver/getBycid', {
+      status: 1,
+      companyId: Number(this.companyId)
+    })
       .then(res => {
-        this.resumeBox = res.data.message;
+        this.resumeBox = res.data.data
       })
       .catch(err => {
-        console.log(err);
-      });
+        console.log(err)
+      })
   },
   methods: {
+    /**
+     * 设置status 4 就是通知面试后删除，0是BOSS未处理，1，是通知面试，2，是不合适，6，是不合适删除
+     * @param index
+     * @param id
+     */
     del(index, id) {
-      this.$axios
-        .get("/bossbase/interview/del", {
-          params: {
-            cid: id,
-            token: this.token,
-            username: this.username,
-            comid: this.comid
-          }
-        })
-        .then(res => {
-          if (res.status === 200) {
-            this.resumeBox.splice(index, 1);
+      postRequest('/deliver/setStatus', {
+        id: id,
+        status: 4
+      }).then(res => {
+          if (res.data.status === 200) {
+            this.resumeBox.splice(index, 1)
+            this.$notify({
+              title: '删除成功',
+              type: 'success',
+              position: 'bottom-left',
+              offset: 100
+            })
           }
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    candidatesJum(id) {
-      this.$axios
-        .get("/bossbase/interview/jumcandidates", {
-          params: {
-            cid: id
-          }
-        })
-        .then(res => {
-          if (res.status === 200) {
-            this.$router.push({ name: "/candidateslist", query: { id: id } });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+    candidatesJum (id) {
+      this.$router.push({
+        name: '/candidateslist',
+        query: { TalentId: id }
+      })
     }
   },
   mounted() {
-    this.username = this.$cookie.get("username");
-    this.token = this.$cookie.get("token");
-    this.comid = this.$cookie.get("comid");
   }
 };
 </script>

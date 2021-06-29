@@ -40,14 +40,34 @@
         </el-col>
       </el-form-item>
       <el-divider></el-divider>
-      <el-form-item label="月 薪：" prop="salary">
+      <!--      <el-form-item label="月 薪：" prop="salary">-->
+      <!--        <el-col :span="11">-->
+      <!--          <el-input v-model="postingForm.salary"></el-input>-->
+      <!--        </el-col>-->
+      <!--      </el-form-item>-->
+      <el-form-item label="工作薪资" prop="salary">
+        <!--      <el-input v-model="ruleForm.job_salary" class="input">-->
         <el-col :span="11">
-          <el-input v-model="postingForm.salary"></el-input>
+          <div class="block">
+            <el-slider
+              v-model="postingForm.salary"
+              :max="50000"
+              :min="0"
+              :step="100"
+              show-input>
+            </el-slider>
+          </div>
+          <el-input v-model="postingForm.salary" disabled class="input"
+                    prefix-icon="iconfont al-iconic_money_enter24px">
+            <template slot="append">RMB/月</template>
+          </el-input>
         </el-col>
       </el-form-item>
       <el-form-item label="工作城市：" prop="place">
         <el-col :span="11">
-          <el-input v-model="postingForm.place"></el-input>
+          <!--          <el-input v-model="postingForm.place"></el-input>-->
+          <v-region @values="regionChange" type="group" :town="false" :area=false>
+          </v-region>
         </el-col>
       </el-form-item>
       <el-divider></el-divider>
@@ -112,115 +132,170 @@
   </div>
 </template>
 <script>
+import { postRequest } from '../../util/api'
+
 export default {
-  data() {
+  data () {
     return {
-      token: "",
-      username: "",
-      comid: "",
+      location: '',
+      token: '',
+      username: '',
+      companyid: '',
       postingForm: {
-        jobname: "",
-        kind: "",
-        department: "",
-        salary: "",
-        place: "",
-        experience: "",
-        academic: "",
-        address: "",
-        jobdescription: "",
-        jobneed: "",
-        remail: "",
-        hr:"",
+        jobname: 'Vue高端开发工程师',
+        kind: '前端开发',
+        department: '前端开发部',
+        salary: '12000',
+        place: '广州',
+        experience: '实习生',
+        academic: '本科',
+        address: '小谷围街道大学城',
+        jobdescription: '测试描述',
+        jobneed: '测试要求',
+        remail: '1666053505@qq.com',
+        hr: 'Test',
       },
       rules: {
         jobname: [
-          { required: true, message: "请输入职位名称", trigger: "blur" }
-        ],
-        kind: [
-          { required: true, message: "请选择职位类别", trigger: "blur" }
-        ],
-        department: [ { required: true, message: "请输入所属部门", trigger: "blur" }],
-        salary: [
-          { required: true, message: "请输入工资范围", trigger: "blur" }
-        ],
-        place: [
-          { required: true, message: "请输入工作城市", trigger: "blur" }
-        ],
-        experience: [
-          { required: true, message: "请选择工作经验", trigger: "blur" }
-        ],
-        academic: [
-          { required: true, message: "请选择学历要求", trigger: "blur" }
-        ],
-        address: [
-          { required: true, message: "请输入工作地址", trigger: "blur" }
-        ],
-        remail: [
-          { required: true, message: "请输入接收简历邮箱", trigger: "blur" },
           {
-            type: "email",
-            message: "请输入正确的邮箱地址",
-            trigger: ["blur", "change"]
+            required: true,
+            message: '请输入职位名称',
+            trigger: 'blur'
           }
         ],
-        hr: [ {required: true, message: "请输入hr",trigger: "blur"}],
+        kind: [
+          {
+            required: true,
+            message: '请选择职位类别',
+            trigger: 'blur'
+          }
+        ],
+        department: [{
+          required: true,
+          message: '请输入所属部门',
+          trigger: 'blur'
+        }],
+        salary: [
+          {
+            required: true,
+            message: '请输入工资范围',
+            trigger: 'blur'
+          }
+        ],
+        place: [
+          {
+            required: true,
+            message: '请输入工作城市',
+            trigger: 'blur'
+          }
+        ],
+        experience: [
+          {
+            required: true,
+            message: '请选择工作经验',
+            trigger: 'blur'
+          }
+        ],
+        academic: [
+          {
+            required: true,
+            message: '请选择学历要求',
+            trigger: 'blur'
+          }
+        ],
+        address: [
+          {
+            required: true,
+            message: '请输入工作地址',
+            trigger: 'blur'
+          }
+        ],
+        remail: [
+          {
+            required: true,
+            message: '请输入接收简历邮箱',
+            trigger: 'blur'
+          },
+          {
+            type: 'email',
+            message: '请输入正确的邮箱地址',
+            trigger: ['blur', 'change']
+          }
+        ],
+        hr: [{
+          required: true,
+          message: '请输入hr',
+          trigger: 'blur'
+        }],
         jobdescription: [
-          { required: true, message: "请输入职位描述", trigger: "blur" }
+          {
+            required: true,
+            message: '请输入职位描述',
+            trigger: 'blur'
+          }
         ],
         jobneed: [
-          { required: true, message: "请输入职位需求", trigger: "blur" }
+          {
+            required: true,
+            message: '请输入职位需求',
+            trigger: 'blur'
+          }
         ]
       }
-    };
+    }
   },
   methods: {
-    submitForm(postingForm) {
+    regionChange (data) {
+      console.log('数据')
+      console.log(data)
+      this.postingForm.place = data.city.value
+      console.log(this.postingForm.place)
+    },
+    submitForm (postingForm) {
       this.$refs.postingForm.validate(valid => {
-        console.log(postingForm);
+        console.log(postingForm)
         if (valid) {
-          this.$axios
-            .post("/postjob", {
-              jobname: this.postingForm.jobname,
-              kind: this.postingForm.kind,
-              department: this.postingForm.department,
-              salary:this.postingForm.salary,
-              place: this.postingForm.place,
-              experience: this.postingForm.experience,
-              academic: this.postingForm.academic,
-              address: this.postingForm.address,
-              jobdescription: this.postingForm.jobdescription,
-              jobneed: this.postingForm.jobneed,
-              remail: this.postingForm.remail,
-              hr: this.postingForm.hr,
-              token: this.token,
-              username:this.username,
-              comid:this.comid
-            })
+          postRequest('/job/add', {
+            userId: this.$store.state.userid,
+            jobName: this.postingForm.jobname,
+            kind: this.postingForm.kind,
+            department: this.postingForm.department,
+            salary: this.postingForm.salary,
+            place: this.postingForm.place,
+            experience: this.postingForm.experience,
+            academic: this.postingForm.academic,
+            address: this.postingForm.address,
+            jobdescription: this.postingForm.jobdescription,
+            jobneed: this.postingForm.jobneed,
+            remail: this.postingForm.remail,
+            hr: this.postingForm.hr,
+            companyid: this.$store.state.companyid
+          })
             .then(res => {
-              if (res.status == 200) { 
-                alert("创建成功");
-                this.$refs.postingForm.resetFields();
+              if (res.data.status === 200) {
+                alert('创建成功')
+                this.$refs.postingForm.resetFields()
               }
             })
             .catch(err => {
-              console.log(err);
-            });
+              console.log(err)
+            })
         } else {
-          console.log("error submit!!");
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     },
-    resetForm(postingForm) {
-      this.$refs.postingForm.resetFields();
+    resetForm (postingForm) {
+      this.$refs.postingForm.resetFields()
     }
   },
-   mounted() {
-    this.username = this.$cookie.get("username");
-    this.token = this.$cookie.get("token");
-    this.comid = this.$cookie.get("comid")
+  mounted () {
+    this.username = this.$store.state.username
+    this.token = this.$store.state.token
+    this.companyid = this.$store.state.companyid
   }
-};
+}
 </script>
 
 <style scoped>
@@ -229,6 +304,7 @@ export default {
   width: 300px;
   margin-bottom: 60px;
 }
+
 .p-t-l {
   float: left;
   width: 0;
@@ -237,6 +313,7 @@ export default {
   border-bottom: 25px solid rgb(252, 70, 70);
   border-right: 25px solid rgb(252, 70, 70);
 }
+
 .p-t-r {
   float: left;
   width: 0px;
@@ -249,6 +326,7 @@ export default {
   border-left: 25px solid rgb(252, 70, 70);
   /* background-color:rgba(0, 0, 0, 0.541);  */
 }
+
 .p-t-c {
   float: left;
   width: 200px;

@@ -38,35 +38,33 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
-      token: "",
-        username: "",
-        comid: "",
-      activeIndex: "1"
-    };
-  },
-  methods: {
-    handleSelect(key, keyPath) {
-      if (key === "4") {
-        var c = confirm("确认退出登录？");
-        if (c) {
-          this.$cookie.delete('token')
-          this.$cookie.delete('username')
-          this.$cookie.delete('comid')
-         this.$router.replace("/");
-          this.$router.go(0)
-        }
-      }
-      console.log(key, keyPath);
+      token: '',
+      username: '',
+      comapnyid: '',
+      userid: '',
+      activeIndex: '1'
     }
   },
-  mounted() {
-    this.username = this.$cookie.get("username");
-    this.token = this.$cookie.get('token');
-    this.comid = this.$cookie.get('comid')
+  methods: {
+    handleSelect (key, keyPath) {
+      if (key === '4') {
+        var c = confirm('确认退出登录？')
+        if (c) {
+          this.$store.dispatch("logout");
+        }
+      }
+      console.log(key, keyPath)
+    }
+  },
+  mounted () {
+    this.username = this.$store.state.username
+    this.token = this.$store.state.token
+    this.comapnyid = this.$store.state.companyid
+    this.userid =this.$store.state.userid
   }
-};
+}
 </script>
 
 <style>
@@ -75,13 +73,16 @@ export default {
   min-height: calc(100vh - 60px - 60px);
   margin: 10px auto;
 }
+
 .bc-aside {
   height: 520px;
 }
+
 .b-aside .el-menu-item,
 .b-aside .el-submenu {
   font-size: 16px;
 }
+
 .bc-main {
   background-color: #fff;
   margin-left: 20px;

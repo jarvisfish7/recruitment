@@ -10,17 +10,17 @@
       <el-table-column type="index" width="30"></el-table-column>
       <el-table-column label="发布时间" width="110">
         <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.time }}</span>
+          <span style="margin-left: 10px">{{ scope.row.createTime }}</span>
         </template>
       </el-table-column>
       <el-table-column label="职 位" width="120">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
-            <p>职 位: {{ scope.row.jobname }}</p>
+            <p>职 位: {{ scope.row.jobName }}</p>
             <p>月 薪: {{ scope.row.salary }}</p>
-            <p>学 历：{{ scope.row.academic}}</p>
+            <p>学 历：{{ scope.row.academic }}</p>
             <div slot="reference" class="name-wrapper">
-              <el-tag size="medium">{{ scope.row.jobname }}</el-tag>
+              <el-tag size="medium">{{ scope.row.jobName }}</el-tag>
             </div>
           </el-popover>
         </template>
@@ -33,12 +33,14 @@
           <el-button
             size="mini"
             @click.prevent="handleEdit(scope.$index, postingForm),dialogFormVisible = true"
-          >编辑</el-button>
+          >编辑
+          </el-button>
           <el-button
             size="mini"
             type="danger"
             @click.prevent="handleDelete(scope.$index, postingForm,scope.row)"
-          >删除</el-button>
+          >下线
+          </el-button>
           <!-- 编辑 -->
           <el-dialog title="修改职位信息" :visible.sync="dialogFormVisible">
             <el-form
@@ -49,7 +51,7 @@
               class="demo-ruleForm"
             >
               <el-form-item label="职位名称：" :label-width="formLabelWidth">
-                <el-input v-model="scope.row.jobname" :disabled="true"></el-input>
+                <el-input v-model="scope.row.jobName" :disabled="true"></el-input>
               </el-form-item>
               <el-form-item label="职位类别：" :label-width="formLabelWidth">
                 <el-input v-model="scope.row.kind" :disabled="true"></el-input>
@@ -124,13 +126,14 @@
               </el-form-item>
               <el-form-item style="display:none;">
                 <el-col :span="17">
-                  <el-input v-model="scope.row.jid"></el-input>
+                  <el-input v-model="scope.row.jobId"></el-input>
                 </el-col>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button @click="dialogFormVisible = false,resetForm(scope.row)">取 消</el-button>
-              <el-button type="primary" @click="dialogFormVisible = false,submitForm(scope.$index, scope.row)">确 定</el-button>
+              <el-button type="primary" @click="dialogFormVisible = false,submitForm(scope.$index, scope.row)">确 定
+              </el-button>
             </div>
           </el-dialog>
         </template>
@@ -139,134 +142,173 @@
   </div>
 </template>
 <script>
+import { getRequest, postRequest } from '../../util/api'
+import { getCompanyId, getUserId } from '../../util/auth'
+
 export default {
-  data() {
+  data () {
     return {
-      token: "",
-      username: "",
-      comid: "",
-      postingForm: [       
-      ],
+      token: '',
+      username: '',
+      companyid: '',
+      postingForm: [],
       dialogFormVisible: false,
       rules: {
-        jobname: [
-          { required: true, message: "请输入职位名称", trigger: "blur" }
-        ],
-        kind: [{ required: true, message: "请选择职位类别", trigger: "blur" }],
-        salary: [
-          { required: true, message: "请输入工资范围", trigger: "blur" }
-        ],
-        place: [{ required: true, message: "请输入工作城市", trigger: "blur" }],
-        experience: [
-          { required: true, message: "请选择工作经验", trigger: "blur" }
-        ],
-        academic: [
-          { required: true, message: "请选择学历要求", trigger: "blur" }
-        ],
-        address: [
-          { required: true, message: "请输入工作地址", trigger: "blur" }
-        ],
-        remail: [
-          { required: true, message: "请输入接收简历邮箱", trigger: "blur" },
+        jobName: [
           {
-            type: "email",
-            message: "请输入正确的邮箱地址",
-            trigger: ["blur", "change"]
+            required: true,
+            message: '请输入职位名称',
+            trigger: 'blur'
           }
         ],
-        hr: [{ required: true, message: "请输入hr", trigger: "blur" }],
+        kind: [{
+          required: true,
+          message: '请选择职位类别',
+          trigger: 'blur'
+        }],
+        salary: [
+          {
+            required: true,
+            message: '请输入工资范围',
+            trigger: 'blur'
+          }
+        ],
+        place: [{
+          required: true,
+          message: '请输入工作城市',
+          trigger: 'blur'
+        }],
+        experience: [
+          {
+            required: true,
+            message: '请选择工作经验',
+            trigger: 'blur'
+          }
+        ],
+        academic: [
+          {
+            required: true,
+            message: '请选择学历要求',
+            trigger: 'blur'
+          }
+        ],
+        address: [
+          {
+            required: true,
+            message: '请输入工作地址',
+            trigger: 'blur'
+          }
+        ],
+        remail: [
+          {
+            required: true,
+            message: '请输入接收简历邮箱',
+            trigger: 'blur'
+          },
+          {
+            type: 'email',
+            message: '请输入正确的邮箱地址',
+            trigger: ['blur', 'change']
+          }
+        ],
+        hr: [{
+          required: true,
+          message: '请输入hr',
+          trigger: 'blur'
+        }],
         jobdescription: [
-          { required: true, message: "请输入职位描述", trigger: "blur" }
+          {
+            required: true,
+            message: '请输入职位描述',
+            trigger: 'blur'
+          }
         ],
         jobneed: [
-          { required: true, message: "请输入职位需求", trigger: "blur" }
+          {
+            required: true,
+            message: '请输入职位需求',
+            trigger: 'blur'
+          }
         ]
       },
-      formLabelWidth: "120px"
-    };
+      formLabelWidth: '120px'
+    }
   },
-  created() {
-    this.$axios
-      .get("/postjob/all", {
-        params: {
-          token: this.$cookie.get("token"),
-          username: this.$cookie.get('username'),
-          comid: this.$cookie.get('comid')
-        }
-      }) //'postjob/all
-      .then(res => {
-        this.postingForm = res.data.data;
-      })
+  created () {
+    this.companyid = getCompanyId()
+    getRequest('/job/selectListBycid',
+      this.companyid
+    ).then(res => {
+      this.postingForm = res.data.data
+    })
       .catch(err => {
-        console.log(err);
-      });
+        console.log(err)
+      })
   },
   methods: {
-    handleEdit(index, row) {},
-    handleDelete(index, row, m) {
-      alert(m.jid)
-      this.$axios
-        .post("/postjob/down", {
-          jid: m.jid,
-          token: this.token,
-          username: this.username,
-          comid: this.comid
-        })
+    handleEdit (index, row) {
+    },
+    handleDelete (index, row, m) {
+      postRequest('/job/deleteByid', {
+        jobId: m.jobId,
+        companyid: this.companyid
+      })
         .then(res => {
           if (res.data.status === 200) {
-            row.splice(index, 1);
+            row.splice(index, 1)
           }
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    submitForm(index,posting) {
+    submitForm (index, posting) {
       this.$refs.posting.validate(valid => {
-        console.log(posting);
+        console.log(posting)
         if (valid) {
-          this.$axios
-            .post("/postjob/edit", {
-              jid: posting.jid,
-              jobname: posting.jobname,
-              department: posting.department,
-              salary: posting.salary,
-              place: posting.place,
-              experience: posting.experience,
-              academic: posting.academic,
-              address: posting.address,
-              jobdescription: posting.jobdescription,
-              jobneed: posting.jobneed,
-              remail: posting.remail,
-              token: this.token,
-              username: this.username,
-              comid: this.comid
-            })
+          postRequest('/job/edit', {
+            userId: getUserId(),
+            jobId: posting.jobId,
+            jobName: posting.jobName,
+            companyid: this.companyid,
+            department: posting.department,
+            kind: posting.kind,
+            salary: posting.salary,
+            place: posting.place,
+            experience: posting.experience,
+            academic: posting.academic,
+            address: posting.address,
+            jobdescription: posting.jobdescription,
+            jobneed: posting.jobneed,
+            remail: posting.remail,
+            hr: posting.hr,
+            status : 0,
+          })
             .then(res => {
               if (res.data.status === 200) {
-                alert("修改成功");
+                alert('修改成功')
                 // this.$refs.postingForm.resetFields();
               }
             })
             .catch(err => {
-              console.log(err);
-            });
+              console.log(err)
+            })
         } else {
-          console.log("error submit!!");
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     },
-    resetForm(posting) {
-      this.$refs.posting.resetFields();
+    resetForm (posting) {
+      this.$refs.posting.resetFields()
     }
   },
-  mounted() {
-    this.username = this.$cookie.get("username");
-    this.token = this.$cookie.get("token");
-    this.comid = this.$cookie.get("comid");
+  mounted () {
+    this.username = this.$store.state.username
+    this.token = this.$store.state.token
+    this.companyid = this.$store.state.companyid
   }
-};
+}
 </script>
 
 <style scoped>
@@ -275,6 +317,7 @@ export default {
   width: 300px;
   margin-bottom: 40px;
 }
+
 .p-t-l {
   float: left;
   width: 0;
@@ -283,6 +326,7 @@ export default {
   border-bottom: 25px solid rgb(252, 70, 70);
   border-right: 25px solid rgb(252, 70, 70);
 }
+
 .p-t-r {
   float: left;
   width: 0px;
@@ -295,6 +339,7 @@ export default {
   border-left: 25px solid rgb(252, 70, 70);
   /* background-color:rgba(0, 0, 0, 0.541);  */
 }
+
 .p-t-c {
   float: left;
   width: 200px;
@@ -305,6 +350,7 @@ export default {
   color: white;
   background-color: rgb(252, 70, 70);
 }
+
 .el-table {
   background-color: gray;
 }

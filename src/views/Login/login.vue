@@ -161,6 +161,12 @@ export default {
             if (this.flag === '0') {
              this.$store.dispatch("login",this.loginForm)
               .then(response=>{
+                this.$notify({
+                  title: '成功',
+                  message: '登录成功',
+                  type: 'success',
+                  position:'bottom-left'
+                });
                 this.$router.push('/mainhome');
               }).catch(err=>{
               console.log(err);
@@ -169,7 +175,12 @@ export default {
             if (this.flag === '1') {
               this.$store.dispatch("companylogin",this.loginForm)
                 .then(response=>{
-                  console.log("我进来了！没跳转!")
+                  this.$notify({
+                    title: '成功',
+                    message: '登录成功',
+                    type: 'success',
+                    position:'bottom-left'
+                  });
                   this.$router.push('/candidates');
                 }).catch(err=>{
                 console.log(err);

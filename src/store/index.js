@@ -53,8 +53,9 @@ export default new Vuex.Store({
               commit('setUserId',data.userid)
               resolve(response)
             }
-            else
+            else{
               reject()
+            }
           })
           .catch(() => reject())
       })
@@ -103,7 +104,6 @@ export default new Vuex.Store({
           .then((response) => {
             console.log("进入成功！")
             if(response.data.status === 200){
-              console.log("拿到数据了!")
               const { data } = response
               commit('setToken', data.data)
               commit('setUserName',data.username)
@@ -111,8 +111,9 @@ export default new Vuex.Store({
               commit('setCompanyId',data.companyid)
               resolve(response)
             }
-            else
+            else{
               reject()
+            }
           })
           .catch(() => reject())
       })

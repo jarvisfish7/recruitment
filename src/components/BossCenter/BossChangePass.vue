@@ -111,9 +111,6 @@ export default {
     }
   },
   mounted() {
-    this.username = this.$cookie.get("username");
-    this.token = this.$cookie.get("token");
-    this.comid = this.$cookie.get("comid");
   }
 };
 </script>
