@@ -13,9 +13,16 @@
               <el-form-item label="公司全称" label-width="90px" required>
                 <el-input v-model="companyData.company" autocomplete="off"></el-input>
               </el-form-item>
-              <el-form-item label="所 在城市" label-width="90px" prop="place" required>
-                <el-input v-model="companyData.place" autocomplete="off"></el-input>
+
+              <el-form-item label="所在城市：" prop="place">
+                  <v-region @values="regionChange" type="group" :town="false" :area=false>
+                  </v-region>
               </el-form-item>
+
+<!--              <el-form-item label="所在城市" label-width="90px" prop="place" required>-->
+<!--                <el-input v-model="companyData.place" autocomplete="off"></el-input>-->
+<!--              </el-form-item>-->
+
               <el-form-item label="公司领域" label-width="90px" prop="kind" required>
                 <el-input v-model="companyData.kind" autocomplete="off"></el-input>
               </el-form-item>
@@ -38,7 +45,7 @@
                   <el-option label="100-499人" value="100-499人"></el-option>
                   <el-option label="500-999人" value="500-999人"></el-option>
                   <el-option label="1000-9999人" value="1000-9999人"></el-option>
-                  <el-option label="10000人以上" value="1000人以上"></el-option>
+                  <el-option label="10000人以上" value="10000人以上"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="公司主页" label-width="90px" prop="url" required>
@@ -100,6 +107,9 @@ export default {
     };
   },
   methods: {
+    regionChange (data) {
+      this.companyData.place = data.city.value
+    },
     submitForm(companyData) {
       this.$refs.companyData.validate(valid => {
         if (valid) {

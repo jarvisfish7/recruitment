@@ -155,9 +155,7 @@ export default {
               .then(res => {
                 console.log(res.data.message ,this.registForm.user,res.data.status)
                 if (res.data.status === 400) {
-                  // alert(new Error(res.data.message))
                   callback(new Error(res.data.message));
-                  // this.registForm.user = ""
                 }else {
                   callback()
                 }
@@ -194,23 +192,14 @@ export default {
       console.log(key, keyPath);
     },
     submitForm() {
-      alert("准备能提交1")
       this.$refs.registForm.validate(valid => {
-        alert("准备能提交2")
         if (valid) {
-          alert("准备能提交3")
           if (this.flag === "0") {
-            alert("能提交")
             this.$store.dispatch("regist",this.registForm)
               .then(res => {
                 const {data} = res
-                  //  this.$cookie.set('userid',res.data.data.userid)
-                  // this.$cookie.set('username',res.data.data.username)
-                  // this.$cookie.set('token',res.data.data.token)
-                  // this.$cookie.set('cid',res.data.data.cid)
                 setUserId(data.user.id)
                 setUserName(data.user.username)
-                alert("回来了，没跳转！")
                   // console.log(this.registForm.user,this.registForm.pass)
                   this.$router.push("/candreg");
               })
@@ -218,13 +207,11 @@ export default {
                 console.log(err);
               });
           }else if (this.flag === "1") {
-            alert("老板准备能提交3")
             this.$store.dispatch("bossregist",this.registForm)
               .then(res => {
                 const {data} = res
                 setUserId(data.user.id)
                 setUserName(data.user.username)
-                alert("boss回来了，没跳转！")
                 this.$router.push("/bossreg");
               })
               .catch(err => {

@@ -100,17 +100,43 @@
               </el-col>
             </el-form-item>
 
+<!--            <el-form-item label="薪资要求：">-->
+<!--              <el-col :span="10">-->
+<!--                <el-input v-model="ruleForm.desiredsalary"></el-input>-->
+<!--              </el-col>-->
+<!--            </el-form-item>-->
+
             <el-form-item label="薪资要求：">
+              <!--      <el-input v-model="ruleForm.job_salary" class="input">-->
               <el-col :span="10">
-                <el-input v-model="ruleForm.desiredsalary"></el-input>
+                <div class="block">
+                  <el-slider
+                    v-model="ruleForm.salary"
+                    :max="50000"
+                    :min="0"
+                    :step="100"
+                    show-input>
+                  </el-slider>
+                </div>
+                <el-input v-model="ruleForm.salary" disabled class="input"
+                          prefix-icon="iconfont al-iconic_money_enter24px">
+                  <template slot="append">RMB/月</template>
+                </el-input>
+              </el-col>
+            </el-form-item>
+<!--            <el-form-item label="城 市：">-->
+<!--              <el-col :span="11">-->
+<!--                <el-input v-model="ruleForm.desiredcity"></el-input>-->
+<!--              </el-col>-->
+<!--            </el-form-item>-->
+
+            <el-form-item label="城市：" prop="place">
+              <el-col :span="11">
+              <v-region @values="regionChange" type="group" :town="false" :area=false>
+              </v-region>
               </el-col>
             </el-form-item>
 
-            <el-form-item label="城 市：">
-              <el-col :span="11">
-                <el-input v-model="ruleForm.desiredcity"></el-input>
-              </el-col>
-            </el-form-item>
           </div>
 
           <div class="education-info">
@@ -226,19 +252,19 @@ export default {
       ruleForm: {
         resumeId:'',
         userId:"",
-        name: "林佳",
-        sex: "男",
+        name: "",
+        sex: "",
         birth: "",
-        nationality: "美 国",
-        email: "1666053505@qq.com",
-        telephone: "13714131611",
-        experience: "实习生",
-        desiredjob: "后端开发",
+        nationality: "中 国",
+        email: "dongxueqq@qq.com",
+        telephone: "15630478691",
+        experience: "三年及以下",
+        desiredjob: "前端开发",
         desiredsalary: "10000",
-        desiredcity: "广州",
-        school: "广东药科大学",
+        desiredcity: "深圳",
+        school: "南京大学",
         subject: "计算机科学与技术",
-        academic: "本科",
+        academic: "硕士",
         begindate: "",
         enddate: "",
         projectname: "",
@@ -311,6 +337,9 @@ export default {
     };
   },
   methods: {
+    regionChange (data) {
+      this.ruleForm.desiredcity = data.city.value
+    },
     submitForm() {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {

@@ -439,7 +439,7 @@ export default {
 
 .cw {
   width: 1400px;
-  height: 680px;
+  min-height: calc(100vh - 60px - 60px);
   margin: auto;
 }
 

@@ -99,6 +99,8 @@
 </template>
 
 <script>
+import {postRequest,getRequest} from '../../util/api'
+
 export default {
   data () {
     return {
@@ -958,53 +960,31 @@ export default {
     }
   },
   created () {
-    this.$axios
-      .get('/home/getjob')
-      .then(res => {
-        if (res.status === 200) {
-          this.newworkbox = res.data.data
-        }
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    // 可以写个获取工作列表数据
+
+    // this.$axios
+    //   .get('/home/getjob')
+    //   .then(res => {
+    //     if (res.status === 200) {
+    //       this.newworkbox = res.data.data
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.log(err)
+    //   })
   },
   methods: {
     jobSearch () {
       if (this.select === '1') {
-        this.$axios
-          .get('/home/jobsearch', {
-            params: {
-              job: this.keyword,
-              company: ''
-            }
-          })
-          .then(res => {
-            if (res.status === 200) {
-              var jb = []
-              jb = res.data.data
-              alert(jb[1].salary)
-              this.$router.push({
-                name: '/job',
-                query: { jb: jb }
-              })
-
-            }
-          })
+        this.$router.push({
+          name: '/job',
+          query: { keyword:this.keyword}
+        })
       } else if (this.select === '2') {
-        this.$axios
-          .get('/home/jobsearch', {
-            params: {
-              job: '',
-              company: this.keyword
-            }
-          })
-          .then(res => {
-            if (res.status === 200) {
-              // var id = res.data.data.jcompany;
-              this.$router.push('/company')
-            }
-          })
+        this.$router.push({
+          name: '/company',
+          query: { keyword:this.keyword}
+        })
       } else {
         alert('请选择职位或公司搜索')
       }
@@ -1025,16 +1005,10 @@ export default {
         })
     },
     dianji (value) {
-      this.$axios
-        .get('/home/menu/?value=' + value)
-        .then(res => {
-          if (res.status === 200) {
-            this.$router.push({ name: '/joblist' })
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      this.$router.push({
+        name: '/job',
+        query: { keyword:value}
+      });
     }
   }
 }

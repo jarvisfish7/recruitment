@@ -15,7 +15,7 @@
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </div>
-          <el-button icon="el-icon-refresh" slot="trigger" @click="handleSelect" style="float: left">选择</el-button>
+          <el-button icon="el-icon-refresh" slot="trigger" @click="handleSelect" style="float: left">刷新</el-button>
           <el-button icon="el-icon-check" type="primary" @click="handleUpload" style="float: right">上传</el-button>
         </div>
 

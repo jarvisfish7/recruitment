@@ -8,7 +8,8 @@
           <!--Logo-->
           <div class="float-left">
             <router-link to="/home" class="header-logo">
-              <font color="white" face="楷体" size="6">IT精英招聘网</font>
+              <img  style="height: 50px;width: 50px" src="../../../public/data/images/Eagle-Logo-Vector.png"/>
+              <font color="white" face="楷体" size="6" >IT精英招聘网</font>
             </router-link>
           </div>
           <!--Menu-->
@@ -56,6 +57,8 @@
 export default {
   data () {
     return {
+      fits: ['fill', 'contain', 'cover', 'none', 'scale-down'],
+      logosrc: '../../../public/data/images/Eagle-Logo-Vector.png'
     }
   },
   computed: {

@@ -246,10 +246,7 @@ export default {
   },
   methods: {
     regionChange (data) {
-      console.log('数据')
-      console.log(data)
       this.postingForm.place = data.city.value
-      console.log(this.postingForm.place)
     },
     submitForm (postingForm) {
       this.$refs.postingForm.validate(valid => {

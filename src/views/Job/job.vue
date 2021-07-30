@@ -548,7 +548,7 @@ export default {
             },
             {
               id: 6,
-              value: '10000人'
+              value: '10000人以上'
             }
           ]
         }
@@ -576,9 +576,13 @@ export default {
     }
   },
   created () {
+
+    if (this.$route.query.keyword!==undefined)
+    this.keyword = this.$route.query.keyword
+
     postRequest('/job/search', {
       condition: {
-        place: this.active_id[0],
+        place: this.active_id[0] + '市',
         experience: this.active_id[1],
         academic: this.active_id[2],
         stage: this.active_id[3],
@@ -614,7 +618,7 @@ export default {
       this.currentPage = currentPage
       postRequest('/job/search', {
         condition: {
-          place: this.active_id[0],
+          place: this.active_id[0] + '市',
           experience: this.active_id[1],
           academic: this.active_id[2],
           stage: this.active_id[3],
@@ -648,7 +652,7 @@ export default {
         this.showcard = false
         postRequest('/job/search', {
           condition: {
-            place: this.active_id[0],
+            place: this.active_id[0]+'市',
             experience: this.active_id[1],
             academic: this.active_id[2],
             stage: this.active_id[3],
@@ -699,7 +703,7 @@ export default {
       this.showcard = false
       postRequest('/job/search', {
         condition: {
-          place: this.active_id[0],
+          place: this.active_id[0]+'市',
           experience: this.active_id[1],
           academic: this.active_id[2],
           stage: this.active_id[3],

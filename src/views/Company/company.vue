@@ -2,6 +2,22 @@
 <template>
   <div class="w company-session">
     <el-container>
+      <!-- 搜索栏 -->
+      <el-header height="70px">
+        <div class="search">
+          <el-input placeholder="请输入内容" v-model.trim="keyword" class="input-with-select">
+            <el-button
+              type="info"
+              icon="el-icon-search"
+              size="medium"
+              slot="append"
+              @click="addCondition"
+            >搜索
+            </el-button>
+          </el-input>
+        </div>
+      </el-header>
+
       <el-main>
         <!-- 公司信息导航栏 -->
         <div class="company-info">
@@ -442,13 +458,13 @@ export default {
               id: 4,
               value: '500-999人'
             },
-            {
-              id: 5,
-              value: '1000-9999人'
-            },
+            // {
+            //   id: 5,
+            //   value: '1000-9999人'
+            // },
             {
               id: 6,
-              value: '10000人'
+              value: '10000人以上'
             }
           ]
         },
@@ -462,7 +478,7 @@ export default {
             },
             {
               id: 1,
-              value: '移动互联网'
+              value: '互联网'
             },
             {
               id: 2,
@@ -503,12 +519,16 @@ export default {
     }
   },
   created () {
+
+    if (this.$route.query.keyword!==undefined)
+      this.keyword = this.$route.query.keyword
+
     postRequest('/company/search', {
       keyword: this.keyword,
       currentPage: this.currentPage,
       pageSize: this.pageSize,
       condition: {
-        place: this.active_id[0],
+        place: this.active_id[0]+'市',
         stage: this.active_id[1],
         scale: this.active_id[2],
         kind: this.active_id[3]
@@ -535,7 +555,7 @@ export default {
         currentPage: this.currentPage,
         pageSize: this.pageSize,
         condition: {
-          place: this.active_id[0],
+          place: this.active_id[0] + '市',
           stage: this.active_id[1],
           scale: this.active_id[2],
           kind: this.active_id[3]
@@ -560,7 +580,7 @@ export default {
         currentPage: this.currentPage,
         pageSize: this.pageSize,
         condition: {
-          place: this.active_id[0],
+          place: this.active_id[0] + '市',
           stage: this.active_id[1],
           scale: this.active_id[2],
           kind: this.active_id[3]

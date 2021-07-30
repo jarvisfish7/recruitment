@@ -27,94 +27,104 @@
 </template>
 
 <script>
+import { postRequest } from '../../util/api'
+
 export default {
-  data() {
+  data () {
     var originalPass = (rule, value, callback) => {
-      var reg = /^[a-z0-9]{6,8}$/i;
-      if (value === "") {
-        callback(new Error("请输入密码"));
+      var reg = /^[a-z0-9]{3,8}$/i
+      if (value === '') {
+        callback(new Error('请输入密码'))
       } else {
         if (!reg.test(value)) {
-          callback(new Error("密码格式不正确,请输入6-8位字母或数字"));
+          callback(new Error('密码格式不正确,请输入3-8位字母或数字'))
         }
-        callback();
+        callback()
       }
-    };
+    }
     var validatePass = (rule, value, callback) => {
-      var reg = /^[a-z0-9]{6,8}$/i;
-      if (value === "") {
-        callback(new Error("请输入密码"));
+      var reg = /^[a-z0-9]{3,8}$/i
+      if (value === '') {
+        callback(new Error('请输入密码'))
       } else {
         if (!reg.test(value)) {
-          callback(new Error("密码格式不正确,请输入6-8位字母或数字"));
+          callback(new Error('密码格式不正确,请输入3-8位字母或数字'))
         } else {
-          this.$refs.changeForm.validateField("checkPass");
+          this.$refs.changeForm.validateField('checkPass')
         }
-        callback();
+        callback()
       }
-    };
+    }
     var validatePass2 = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请再次输入密码"));
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
       } else if (value !== this.changeForm.pass) {
-        callback(new Error("两次输入密码不一致!"));
+        callback(new Error('两次输入密码不一致!'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
-      token: "",
-      username: "",
+      token: '',
+      username: '',
       changeForm: {
-        originalPass: "",
-        pass: "",
-        checkPass: ""
+        originalPass: '',
+        pass: '',
+        checkPass: ''
       },
       rules: {
         originalPass: [
-          { required: true, validator: originalPass, trigger: "blur" }
+          {
+            required: true,
+            validator: originalPass,
+            trigger: 'blur'
+          }
         ],
-        pass: [{ required: true, validator: validatePass, trigger: "blur" }],
+        pass: [{
+          required: true,
+          validator: validatePass,
+          trigger: 'blur'
+        }],
         checkPass: [
-          { required: true, validator: validatePass2, trigger: "blur" }
+          {
+            required: true,
+            validator: validatePass2,
+            trigger: 'blur'
+          }
         ]
       }
-    };
+    }
   },
   methods: {
-    submitForm(changeForm) {
+    submitForm (changeForm) {
       this.$refs.changeForm.validate(valid => {
         if (valid) {
-          this.$axios
-            .post("/mybase/changepass", {
-              username: this.username,
-              newpass: this.changeForm.pass,
-              token: this.token
-            })
+          postRequest('/user/changepass', {
+            username: this.$store.state.username,
+            newpass: this.changeForm.pass,
+          })
             .then(res => {
               if (res.data.status === 200) {
-                alert("提交成功");
-              }else{
-                alert("提交失败")
+                alert('提交成功')
+                this.$store.dispatch("logout");
+              } else {
+                alert('提交失败')
               }
             })
             .catch(err => {
-              console.log(err);
-            });
+              console.log(err)
+            })
         } else {
-          console.log("error submit!!");
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     }
   },
-  mounted() {
-    this.username = this.$cookie.get("username");
-    this.token = this.$cookie.get("token");
-    this.userid = this.$cookie.get("userid");
-    this.cid = this.$cookie.get("cid");
+  mounted () {
+
   }
-};
+}
 </script>
 
 <style scoped>
@@ -122,10 +132,12 @@ export default {
   width: 800px;
   margin: 10px auto;
 }
+
 .mychangeForm {
   width: 470px;
   margin: 50px auto;
 }
+
 .mychangeForm .el-form-item {
   margin: 50px 0;
 }
